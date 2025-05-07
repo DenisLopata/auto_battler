@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://bn0ajrndu5y6v"]
+
+[ext_resource type="Theme" uid="uid://cyjb538c0mg2c" path="res://assets/themes/main_theme.tres" id="1_r4o5f"]
+
+[node name="FighterBarGroup" type="VBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+
+[node name="NameLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_r4o5f")
+text = "Mirko"
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_r4o5f")
+
+[node name="StaminaBar" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_r4o5f")
+
+[node name="SpecialMeter" type="ProgressBar" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_r4o5f")

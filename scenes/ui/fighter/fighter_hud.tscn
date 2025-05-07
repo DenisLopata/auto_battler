@@ -1,0 +1,32 @@
+[gd_scene load_steps=3 format=3 uid="uid://coga57yxtjcop"]
+
+[ext_resource type="Script" uid="uid://cstfpf7u074td" path="res://scenes/ui/fighter/fighter_hud.gd" id="1_4ssps"]
+[ext_resource type="PackedScene" uid="uid://bn0ajrndu5y6v" path="res://scenes/ui/fighter/fighter_bar_group.tscn" id="2_4ssps"]
+
+[node name="FighterHUD" type="Control"]
+custom_minimum_size = Vector2(150, 360)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 150.0
+script = ExtResource("1_4ssps")
+fighter_bar_group_scene = ExtResource("2_4ssps")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+unique_name_in_owner = true
+layout_mode = 2

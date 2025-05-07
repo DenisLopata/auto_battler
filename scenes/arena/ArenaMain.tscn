@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://df2u0x7as78i3"]
+
+[ext_resource type="Script" uid="uid://qx70k73qbed6" path="res://scenes/arena/arena_main.gd" id="1_0w8lr"]
+[ext_resource type="PackedScene" uid="uid://cpuxaae705hxw" path="res://scenes/fighters/Fighter.tscn" id="1_bq1rl"]
+[ext_resource type="Script" uid="uid://bhvp7taytdsl3" path="res://scenes/arena/arena_controller.gd" id="2_3ilgy"]
+[ext_resource type="PackedScene" uid="uid://coga57yxtjcop" path="res://scenes/ui/fighter/fighter_hud.tscn" id="2_xniir"]
+[ext_resource type="Theme" uid="uid://cyjb538c0mg2c" path="res://assets/themes/main_theme.tres" id="3_pd5rn"]
+[ext_resource type="Script" uid="uid://dn36oeliwqgou" path="res://scenes/arena/fight_manager.gd" id="5_qdlww"]
+
+[node name="ArenaMain" type="Node2D"]
+script = ExtResource("1_0w8lr")
+
+[node name="Background" type="TileMapLayer" parent="."]
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="FighterHUD" parent="UI" instance=ExtResource("2_xniir")]
+
+[node name="FighterHUDRight" parent="UI" instance=ExtResource("2_xniir")]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -150.0
+offset_right = 0.0
+offset_bottom = 360.0
+grow_horizontal = 0
+
+[node name="StartButton" type="Button" parent="UI"]
+offset_left = 283.0
+offset_top = 4.0
+offset_right = 371.0
+offset_bottom = 32.0
+theme = ExtResource("3_pd5rn")
+text = "Start"
+
+[node name="ArenaController" type="Node" parent="."]
+script = ExtResource("2_3ilgy")
+
+[node name="FightManager" type="Node" parent="."]
+script = ExtResource("5_qdlww")
+fighter_scene = ExtResource("1_bq1rl")

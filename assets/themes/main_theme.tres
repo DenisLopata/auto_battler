@@ -1,0 +1,8 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cyjb538c0mg2c"]
+
+[ext_resource type="FontFile" uid="uid://dy18ig0coq551" path="res://assets/fonts/Early GameBoy.ttf" id="1_3f3va"]
+
+[resource]
+Label/font_sizes/font_size = 8
+ProgressBar/font_sizes/font_size = 8
+ProgressBar/fonts/font = ExtResource("1_3f3va")
