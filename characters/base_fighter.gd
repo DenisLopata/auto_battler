@@ -35,6 +35,8 @@ var injured: bool = false
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var visuals := FighterVisual.new()
+@onready var mover := FighterMover.new()
 
 # Setters that emit signals
 func set_health(value: int) -> void:
@@ -63,6 +65,16 @@ func _ready():
 	health = max_health()
 	stamina = max_stamina()
 	special_meter = 0
+	
+	add_child(visuals)
+	visuals.init($Sprite2D, $AnimationPlayer)
+	
+	add_child(mover)
+	mover.init(
+		move_speed,
+		func(): return self.position,
+		func(p): self.position = p
+		)
 
 func max_health() -> int:
 	var total = get_total_stats().endurance * 10
@@ -125,13 +137,8 @@ func apply_damage(amount: int):
 	if health < 0:
 		health = 0
 	health_changed.emit()
-	show_hit_flash()
+	visuals.flash_hit()
 	
-func show_hit_flash():
-	sprite_2d.modulate = Color(1, 0.2, 0.2)  # red flash
-	await get_tree().create_timer(0.1).timeout
-	sprite_2d.modulate = Color(1, 1, 1)  # reset to normal
-
 func use_stamina(on_hit: bool):
 	var cost = get_stamina_cost(on_hit)
 	stamina = max(0, stamina - cost)
@@ -146,15 +153,17 @@ func is_in_range(target: Node) -> bool:
 	return res
 	
 func move_away_from(target: Node, delta: float) -> void:
-	var direction = (self.position - target.position).normalized()
-	var desired_distance = 200  # pixels away
-	if self.position.distance_to(target.position) < desired_distance:
-		self.position += direction * (move_speed / 2) * delta
+	#var direction = (self.position - target.position).normalized()
+	#var desired_distance = 200  # pixels away
+	#if self.position.distance_to(target.position) < desired_distance:
+		#self.position += direction * (move_speed / 2) * delta
+	mover.move_away(target.position, delta)
 
 
 func move_toward_target(target: Node, delta: float) -> void:
-	var direction = (target.position - self.position).normalized()
-	self.position += direction * move_speed * delta
+	#var direction = (target.position - self.position).normalized()
+	#self.position += direction * move_speed * delta
+	mover.move_toward(target.position, delta)
 	
 func flip_sprite(is_flip: bool):
 	if sprite_2d:
@@ -165,11 +174,10 @@ func get_trait_behavior_modifier() -> float:
 	return 0.0
 	
 func play_attack_animation():
-	if $AnimationPlayer.has_animation("basic_punch"):
-		$AnimationPlayer.play("basic_punch")
+	visuals.play_attack()
 		
 func is_playing_attack_animation() -> bool:
-	return $AnimationPlayer.is_playing() and $AnimationPlayer.current_animation == "basic_punch"
-
+	return visuals.is_playing_attack()
+	
 func emit_attack_hit_window():
 	attack_hit_window.emit(self)
