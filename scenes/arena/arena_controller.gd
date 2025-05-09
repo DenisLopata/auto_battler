@@ -8,30 +8,10 @@ var fighter_left: Fighter = null
 var fighter_right: Fighter = null
 
 
-func _process(delta):
-	if fight_over:
-		return
-	
-	if fighter_left and fighter_right:
-		process_fighter(fighter_left, fighter_right, delta)
-		process_fighter(fighter_right, fighter_left, delta)
-		
-		# Update cooldowns
-		fighter_left._process(delta)
-		fighter_right._process(delta)
-
 func _end_fight(winner: Fighter):
 	print("Battle Over! Winner: %s" % winner.fighter_name)
 	# Optional: trigger animations, end UI, etc.
 	
-func process_fighter(attacker: BaseFighter, target: BaseFighter, delta: float) -> void:
-	
-	if FighterBehavior.should_retreat(attacker, target):
-		attacker.move_away_from(target, delta)
-	elif not attacker.is_in_range(target):
-		attacker.move_toward_target(target, delta)
-	else:
-		try_attack(attacker, target)
 		
 func set_fighters(left: Fighter, right: Fighter):
 	fighter_left = left
@@ -40,6 +20,9 @@ func set_fighters(left: Fighter, right: Fighter):
 	
 	left.attack_hit_window.connect(_on_attack_hit_window)
 	right.attack_hit_window.connect(_on_attack_hit_window)
+	
+	left.victory_animation_finished.connect(_on_victory_animation_finished)
+	right.victory_animation_finished.connect(_on_victory_animation_finished)
 	
 func start_fight():
 	fight_over = false
@@ -59,22 +42,7 @@ func try_attack(attacker: Fighter, defender: Fighter):
 	
 	# Trigger animation
 	attacker.play_attack_animation()
-	
-	#if does_attack_hit(attacker, defender):
-		#var damage = calculate_damage(attacker, defender)
-		#defender.apply_damage(damage)
-		#print(attacker.name, " hit ", defender.name, " for ", damage)
-		#on_hit = true
-		#attacker.use_stamina(on_hit)
-		#if defender.health <= 0:
-			#print("%s is defeated! %s wins!" % [defender.name, attacker.name])
-			#end_fight(attacker, defender) # optional future hook
-	#else:
-		#show_miss_effect()
-		#print(attacker.name, " missed!")
-		#on_hit = false
-		#attacker.use_stamina(on_hit)
-	#attacker.reset_attack_cooldown()
+
 
 func end_fight(winner: Fighter, loser: Fighter):
 	if fight_over:
@@ -104,15 +72,25 @@ func calculate_damage(attacker: Fighter, defender: Fighter) -> int:
 func show_miss_effect() -> void:
 	print("Attack missed!")
 	
+	
+func _on_victory_animation_finished(attacker: BaseFighter) -> void:
+	#TODO display win screen and so on
+	#show_win_screen()
+	pass
+	
 func _on_attack_hit_window(attacker: Fighter):
 	var defender = fighter_right if attacker == fighter_left else fighter_left
 
 	if does_attack_hit(attacker, defender):
 		var damage = calculate_damage(attacker, defender)
 		defender.apply_damage(damage)
+		
 		print(attacker.name, " hit ", defender.name, " for ", damage)
 		attacker.use_stamina(true)
+		
 		if defender.health <= 0:
+			defender.on_death()
+			attacker.fsm.switch_state(FsmState.StateId.VICTORY)
 			end_fight(attacker, defender)
 	else:
 		show_miss_effect()

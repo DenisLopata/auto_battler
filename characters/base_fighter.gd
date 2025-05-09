@@ -10,6 +10,7 @@ signal health_changed
 signal stamina_changed
 signal special_meter_changed
 signal attack_hit_window(fighter: BaseFighter)
+signal victory_animation_finished(fighter: BaseFighter)
 
 # Core Stats
 @export var fighter_name: String
@@ -25,6 +26,9 @@ signal attack_hit_window(fighter: BaseFighter)
 @export var attack_range: float = 50.0  # in pixels
 @export var move_speed: float = 50.0    # movement per second
 
+# Context
+@export var behavior: FighterBehaviorContext
+
 # Battle status
 var health: int : set = set_health
 var stamina: int : set = set_stamina
@@ -33,10 +37,13 @@ var morale: float = 1.0
 var fatigue: float = 0.0
 var injured: bool = false
 
+var context: FighterContext
+
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var visuals := FighterVisual.new()
 @onready var mover := FighterMover.new()
+@onready var fsm: Fsm = $Fsm
 
 # Setters that emit signals
 func set_health(value: int) -> void:
@@ -60,6 +67,8 @@ func set_special_meter(value: int) -> void:
 func _process(delta):
 	if attack_cooldown > 0:
 		attack_cooldown -= delta
+	
+	context.update()
 		
 func _ready():
 	health = max_health()
@@ -75,7 +84,16 @@ func _ready():
 		func(): return self.position,
 		func(p): self.position = p
 		)
-
+		
+	
+	self.behavior = FighterBehaviorContext.new()
+	
+	self.context = FighterContext.new()
+	self.context.self_fighter = self
+	
+	fsm.fighter = self
+	fsm.init()
+	
 func max_health() -> int:
 	var total = get_total_stats().endurance * 10
 	return total
@@ -137,7 +155,8 @@ func apply_damage(amount: int):
 	if health < 0:
 		health = 0
 	health_changed.emit()
-	visuals.flash_hit()
+	#visuals.flash_hit()
+	on_hit(amount)
 	
 func use_stamina(on_hit: bool):
 	var cost = get_stamina_cost(on_hit)
@@ -181,3 +200,9 @@ func is_playing_attack_animation() -> bool:
 	
 func emit_attack_hit_window():
 	attack_hit_window.emit(self)
+
+func on_hit(amount: int = 0):
+	fsm.switch_state(FsmState.StateId.HIT)
+
+func on_death():
+	fsm.switch_state(FsmState.StateId.DEAD)

@@ -31,50 +31,17 @@ func _initialize_ui():
 		fighter_ui[fighter] = group
 
 func _update_bars(fighter: Fighter, group: VBoxContainer):
-	group.get_node("HealthBar").value = fighter.health
-	group.get_node("HealthBar").max_value = fighter.max_health()
 
+	var h = fighter.health
+	var mh = fighter.max_health()
+	group.get_node("HealthBar").allow_greater = true
+	group.get_node("HealthBar").value = h
+	group.get_node("HealthBar").max_value = mh
+	
+	group.get_node("StaminaBar").allow_greater = true
 	group.get_node("StaminaBar").value = fighter.stamina
 	group.get_node("StaminaBar").max_value = fighter.max_stamina()
 
+	group.get_node("SpecialMeter").allow_greater = true
 	group.get_node("SpecialMeter").value = fighter.special_meter
 	group.get_node("SpecialMeter").max_value = fighter.max_special()
-
-
-
-#class_name FighterHUD
-#extends Control
-#
-#@export var fighter: Fighter
-#
-#@onready var name_label: Label = %NameLabel
-#@onready var health_bar: ProgressBar = %HealthBar
-#@onready var stamina_bar: ProgressBar = %StaminaBar
-#@onready var special_meter: ProgressBar = %SpecialMeter
-#
-#func _ready():
-	#if fighter:
-		#_initialize_ui()
-		#_connect_fighter_signals()
-#
-#func _initialize_ui():
-	#name_label.text = fighter.fighter_name
-	#_update_bars()
-#
-#func _connect_fighter_signals():
-	#fighter.health_changed.connect(_update_bars)
-	#fighter.stamina_changed.connect(_update_bars)
-	#fighter.special_meter_changed.connect(_update_bars)
-#
-#func _update_bars():
-	#health_bar.value = fighter.health
-	#var max_health = fighter.max_health()
-	#health_bar.max_value = max_health
-#
-	#stamina_bar.value = fighter.stamina
-	#var max_stamina = fighter.max_stamina()
-	#stamina_bar.max_value = max_stamina
-#
-	#special_meter.value = fighter.special_meter
-	#var max_special = fighter.max_special()
-	#special_meter.max_value = max_special

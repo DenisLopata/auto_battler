@@ -36,6 +36,8 @@ func start_fight():
 	fighter_left.fighter_name = get_random_name()
 	fighter_right.fighter_name = get_random_name()
 	
+	randomize_stats(fighter_left)
+	randomize_stats(fighter_right)
 	
 	# Add to scene
 	add_child(fighter_left)
@@ -48,9 +50,6 @@ func start_fight():
 	#rotate sprite
 	fighter_right.flip_sprite(true)
 	
-	randomize_stats(fighter_left)
-	randomize_stats(fighter_right)
-	
 	# Connect them
 	arena_controller.set_fighters(fighter_left, fighter_right)
 	
@@ -59,7 +58,10 @@ func start_fight():
 	
 	hud_left._initialize_ui()
 	hud_right._initialize_ui()
-
+	
+	fighter_left.context.target_fighter = fighter_right
+	fighter_right.context.target_fighter = fighter_left
+	
 	# Start the fight
 	arena_controller.start_fight()
 	fight_started.emit()
