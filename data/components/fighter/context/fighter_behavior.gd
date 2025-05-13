@@ -23,6 +23,26 @@ func is_retreating(context: FighterContext) -> bool:
 func wants_to_approach(context: FighterContext) -> bool:
 	return context.distance_to_target > context.self_fighter.attack_range and not is_retreating(context)
 
+func should_block(context: FighterContext) -> bool:
+	var opponent := context.target_fighter
+	if opponent == null or opponent.context.intent == null:
+		return false
+	
+	var incoming_intent := opponent.context.intent
+	var incoming_type := incoming_intent.type
+
+	# Predict incoming attack
+	if incoming_type == IntentTypes.IntentType.ATTACK:
+		var distance := context.distance_to_target
+		if distance < 60.0:  # Adjust based on hitbox/melee range
+			return true
+
+	# Maybe block if low stamina and expecting aggression
+	#if context.self_fighter.stamina < context.self_fighter.max_stamina * 0.3:
+		#if randf() < 0.1:
+			#return true
+
+	return false
 
 func should_retreat(context: FighterContext) -> bool:
 	var fighter: BaseFighter = context.self_fighter
@@ -46,3 +66,23 @@ func should_retreat(context: FighterContext) -> bool:
 	var res = randf() < clamp(retreat_weight, 0.0, 1.0)
 	return res
 	
+func evaluate_intent(context: FighterContext) -> void:
+	if not context.self_fighter or not context.target_fighter:
+		context.intent.clear()
+		return
+		
+	var fighter := context.self_fighter
+	var intent := context.intent
+
+	# Simple decision logic (you’ll refine this later)
+	if should_retreat(context):
+		intent.set_intent(IntentTypes.IntentType.RETREAT)
+	elif should_block(context):
+		intent.set_intent(IntentTypes.IntentType.BLOCK)
+	elif should_attack(context):
+		var move := fighter.select_best_move(context)
+		intent.set_intent(IntentTypes.IntentType.ATTACK, move.name)
+	elif should_move(context):
+		intent.set_intent(IntentTypes.IntentType.MOVE, "", context.target_fighter.global_position)
+	else:
+		intent.clear()

@@ -1,12 +1,14 @@
 extends Node
 
 signal fight_ended(winner: Fighter, loser: Fighter)
+signal fighters_ready(fighter_left: Fighter, fighter_right: Fighter)
 
 var fight_over := false
 
 var fighter_left: Fighter = null
 var fighter_right: Fighter = null
 
+var camera_rig: Node2D
 
 func _end_fight(winner: Fighter):
 	print("Battle Over! Winner: %s" % winner.fighter_name)
@@ -23,6 +25,8 @@ func set_fighters(left: Fighter, right: Fighter):
 	
 	left.victory_animation_finished.connect(_on_victory_animation_finished)
 	right.victory_animation_finished.connect(_on_victory_animation_finished)
+	
+	fighters_ready.emit(fighter_left, fighter_right)
 	
 func start_fight():
 	fight_over = false
@@ -84,7 +88,13 @@ func _on_attack_hit_window(attacker: Fighter):
 	if does_attack_hit(attacker, defender):
 		var damage = calculate_damage(attacker, defender)
 		defender.apply_damage(damage)
-		
+		#camera_rig.punch_zoom_effect()
+		camera_rig.punch_zoom_effect(0.4)
+		var move = attacker.default_move
+		if  move.causes_camera_slowmo_on_ko:
+			trigger_slowmo(move.slowmo_duration, move.slowmo_timescale)
+
+
 		print(attacker.name, " hit ", defender.name, " for ", damage)
 		attacker.use_stamina(true)
 		
@@ -98,3 +108,11 @@ func _on_attack_hit_window(attacker: Fighter):
 		attacker.use_stamina(false)
 
 	attacker.reset_attack_cooldown()
+
+func trigger_slowmo(duration: float, timescale: float):
+	Engine.time_scale = timescale
+
+	await get_tree().create_timer(duration * timescale).timeout
+	
+	var tween = get_tree().create_tween()
+	tween.tween_property(Engine, "time_scale", 1.0, 0.3)

@@ -2,6 +2,8 @@
 class_name FighterContext
 extends Resource
 
+@export var intent: FighterIntent = FighterIntent.new()
+
 var self_fighter: BaseFighter
 var target_fighter: BaseFighter
 
@@ -17,3 +19,6 @@ func update() -> void:
 		attack_cooldown = self_fighter.attack_cooldown
 		current_hp = self_fighter.health
 		max_hp = self_fighter.max_health()
+		
+		self_fighter.behavior.evaluate_intent(self)
+		target_fighter.behavior.evaluate_intent(self)

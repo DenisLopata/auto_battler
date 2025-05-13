@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://cpuxaae705hxw"]
+[gd_scene load_steps=29 format=3 uid="uid://cpuxaae705hxw"]
 
 [ext_resource type="Script" uid="uid://7cf861wneut" path="res://scenes/fighters/fighter.gd" id="1_d6fhc"]
 [ext_resource type="Texture2D" uid="uid://bqa643ek8kd8t" path="res://assets/sprites/fighters/fighters_concept_expanded.png" id="2_20mlj"]
@@ -11,9 +11,14 @@
 [ext_resource type="Texture2D" uid="uid://c05bqbd3lxgjf" path="res://assets/sprites/fighters/green_guy/attack/green_guy-basic_victory.png" id="8_4tys7"]
 [ext_resource type="Script" uid="uid://c1bu0y417vta2" path="res://data/fsm/states/attack_state.gd" id="8_11i5q"]
 [ext_resource type="Script" uid="uid://g7itouvlgrni" path="res://data/fsm/states/move_state.gd" id="8_hq4sl"]
+[ext_resource type="Texture2D" uid="uid://c5s33q2l2rowm" path="res://assets/sprites/fighters/green_guy/attack/green_guy-basic_run.png" id="8_vp2t5"]
+[ext_resource type="Texture2D" uid="uid://8s6ftlh0h11c" path="res://assets/sprites/fighters/green_guy/block/green_guy-basic_block.png" id="9_5r4we"]
 [ext_resource type="Script" uid="uid://cr4pmevpi0hkq" path="res://data/fsm/states/hit_state.gd" id="10_4r6eu"]
 [ext_resource type="Script" uid="uid://dvby4iringnnj" path="res://data/fsm/states/dead_state.gd" id="11_pciqu"]
 [ext_resource type="Script" uid="uid://cmwvfmcxml2ut" path="res://data/fsm/states/victory_state.gd" id="13_l15jf"]
+[ext_resource type="Script" uid="uid://ujccwgh2usql" path="res://data/fsm/states/retreat_state.gd" id="16_8j1r2"]
+[ext_resource type="Script" uid="uid://dd2gw3iiko3st" path="res://scenes/fighters/move_controller.gd" id="16_vp2t5"]
+[ext_resource type="Script" uid="uid://b5y4c4dimws8v" path="res://data/fsm/states/block_state.gd" id="17_5r4we"]
 
 [sub_resource type="Animation" id="Animation_80483"]
 resource_name = "basic_punch"
@@ -56,7 +61,7 @@ tracks/2/keys = {
 }
 tracks/3/type = "method"
 tracks/3/imported = false
-tracks/3/enabled = true
+tracks/3/enabled = false
 tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
@@ -267,13 +272,96 @@ tracks/2/keys = {
 "values": [0, 1, 2, 3]
 }
 
+[sub_resource type="Animation" id="Animation_k5bv6"]
+resource_name = "basic_run"
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("8_vp2t5")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [5]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4]
+}
+
+[sub_resource type="Animation" id="Animation_8la6q"]
+resource_name = "basic_block"
+length = 0.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [ExtResource("9_5r4we")]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:hframes")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:frame")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 3]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_p2vai"]
 _data = {
 &"RESET": SubResource("Animation_26dor"),
+&"basic_block": SubResource("Animation_8la6q"),
 &"basic_death": SubResource("Animation_4tys7"),
 &"basic_hit": SubResource("Animation_l15jf"),
 &"basic_idle": SubResource("Animation_p2vai"),
 &"basic_punch": SubResource("Animation_80483"),
+&"basic_run": SubResource("Animation_k5bv6"),
 &"basic_victory": SubResource("Animation_vp2t5")
 }
 
@@ -308,3 +396,12 @@ script = ExtResource("11_pciqu")
 
 [node name="VictoryState" type="Node" parent="Fsm"]
 script = ExtResource("13_l15jf")
+
+[node name="RetreatState" type="Node" parent="Fsm"]
+script = ExtResource("16_8j1r2")
+
+[node name="BlockState" type="Node" parent="Fsm"]
+script = ExtResource("17_5r4we")
+
+[node name="MoveController" type="Node" parent="."]
+script = ExtResource("16_vp2t5")

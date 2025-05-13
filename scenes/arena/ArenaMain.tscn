@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://df2u0x7as78i3"]
+[gd_scene load_steps=9 format=3 uid="uid://df2u0x7as78i3"]
 
 [ext_resource type="Script" uid="uid://qx70k73qbed6" path="res://scenes/arena/arena_main.gd" id="1_0w8lr"]
 [ext_resource type="PackedScene" uid="uid://cpuxaae705hxw" path="res://scenes/fighters/Fighter.tscn" id="1_bq1rl"]
 [ext_resource type="Script" uid="uid://bhvp7taytdsl3" path="res://scenes/arena/arena_controller.gd" id="2_3ilgy"]
+[ext_resource type="Texture2D" uid="uid://dvmu38ux8pkdn" path="res://assets/backgrounds/basic/Traditional Dojo Interior in Pixel Art.png" id="2_fli2w"]
 [ext_resource type="PackedScene" uid="uid://coga57yxtjcop" path="res://scenes/ui/fighter/fighter_hud.tscn" id="2_xniir"]
+[ext_resource type="Script" uid="uid://dw2be0inn6tea" path="res://scenes/arena/camera_rig.gd" id="3_i7jdh"]
 [ext_resource type="Theme" uid="uid://cyjb538c0mg2c" path="res://assets/themes/main_theme.tres" id="3_pd5rn"]
 [ext_resource type="Script" uid="uid://dn36oeliwqgou" path="res://scenes/arena/fight_manager.gd" id="5_qdlww"]
 
@@ -11,6 +13,19 @@
 script = ExtResource("1_0w8lr")
 
 [node name="Background" type="TileMapLayer" parent="."]
+
+[node name="BackgroundImage" type="TextureRect" parent="."]
+offset_top = -280.0
+offset_right = 1024.0
+offset_bottom = 744.0
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("2_fli2w")
+stretch_mode = 4
+
+[node name="CameraRig" type="Node2D" parent="."]
+script = ExtResource("3_i7jdh")
+
+[node name="DynamicCamera" type="Camera2D" parent="CameraRig"]
 
 [node name="UI" type="CanvasLayer" parent="."]
 

@@ -7,7 +7,9 @@ enum StateId {
 	ATTACK,
 	HIT,
 	DEAD,
-	VICTORY
+	VICTORY,
+	BLOCK,
+	RETREAT
 }
 
 var fsm: Fsm

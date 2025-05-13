@@ -9,18 +9,21 @@ var arena_controller: Node
 var hud_left: FighterHUD
 var hud_right: FighterHUD
 var start_button: Button
+var camera_rig: Node2D
 
 var fighter_left: Fighter = null
 var fighter_right: Fighter = null
 
-func setup(arena: Node, left_hud: FighterHUD, right_hud: FighterHUD, button: Button):
+func setup(arena: Node, left_hud: FighterHUD, right_hud: FighterHUD, button: Button, camera_rig: Node2D):
 	arena_controller = arena
 	hud_left = left_hud
 	hud_right = right_hud
 	start_button = button
 	start_button.pressed.connect(_on_start_pressed)
-	arena_controller.fight_ended.connect(_on_fight_ended)
 	start_button.disabled = false
+	
+	arena_controller.fight_ended.connect(_on_fight_ended)
+	arena_controller.camera_rig = camera_rig
 
 func _on_start_pressed():
 	start_button.disabled = true

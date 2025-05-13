@@ -4,6 +4,7 @@ extends Node
 const FighterClasses = preload("res://data/enums/fighter/fighter_classes.gd")
 const FighterPersonality = preload("res://data/enums/fighter/fighter_personality.gd")
 const AttackResult = preload("res://data/enums/fighter/attack_result.gd")
+const MoveLibrary = preload("res://data/moves/move_library.gd")
 
 const BASE_ATTACK_COOLDOWN := 3.0
 signal health_changed
@@ -29,6 +30,10 @@ signal victory_animation_finished(fighter: BaseFighter)
 # Context
 @export var behavior: FighterBehaviorContext
 
+# Moves
+@export var moves: Array[MoveData] = []
+@export var default_move: MoveData
+
 # Battle status
 var health: int : set = set_health
 var stamina: int : set = set_stamina
@@ -39,11 +44,16 @@ var injured: bool = false
 
 var context: FighterContext
 
+var is_blocking: bool = false
+
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var visuals := FighterVisual.new()
 @onready var mover := FighterMover.new()
 @onready var fsm: Fsm = $Fsm
+@onready var move_controller: MoveController = $MoveController
+
+#region Setters
 
 # Setters that emit signals
 func set_health(value: int) -> void:
@@ -63,12 +73,17 @@ func set_special_meter(value: int) -> void:
 	if clamped != special_meter:
 		special_meter = clamped
 		special_meter_changed.emit()
-		
+
+#endregion
+
+#region Defaults
+
 func _process(delta):
 	if attack_cooldown > 0:
 		attack_cooldown -= delta
 	
 	context.update()
+	move_controller.update(delta)
 		
 func _ready():
 	health = max_health()
@@ -94,6 +109,29 @@ func _ready():
 	fsm.fighter = self
 	fsm.init()
 	
+	var ml = MoveLibrary.new()
+	var move_data = ml.create_basic_punch()
+	moves.append(move_data)
+	self.default_move = move_data
+	
+	move_controller.attack_window_started.connect(_on_attack_window_started)
+	move_controller.move_finished.connect(_on_move_finished)
+
+#endregion
+
+#region Signals
+
+func _on_attack_window_started(move: MoveData):
+	emit_attack_hit_window()
+
+func _on_move_finished(move: MoveData):
+	print("Move finished: ", move.name)
+
+
+#endregion
+
+#region Helpers
+
 func max_health() -> int:
 	var total = get_total_stats().endurance * 10
 	return total
@@ -105,7 +143,7 @@ func max_stamina() -> int:
 func max_special() -> int:
 	var total = get_total_stats().technique * 10
 	return total
-
+	
 func get_total_stats() -> FighterStats:
 	var total := base_stats
 	for tr in traits:
@@ -128,7 +166,6 @@ func get_total_stat(stat_name: String) -> int:
 			push_warning("Unknown stat name: %s" % stat_name)
 			return 0
 
-
 func get_attack_speed() -> float:
 	# Faster with more agility
 	var agility = get_total_stat("agility")
@@ -145,12 +182,14 @@ func check_attack_possible(on_hit: bool) -> int:
 func can_attack(on_hit: bool) -> bool:
 	var res = check_attack_possible(on_hit) == AttackResult.AttackCheckResult.SUCCESS
 	return res
-
 	
 func reset_attack_cooldown():
 	attack_cooldown = get_attack_speed()
 
 func apply_damage(amount: int):
+	if is_blocking:
+		amount *= 0.3
+		
 	health -= amount
 	if health < 0:
 		health = 0
@@ -171,12 +210,12 @@ func is_in_range(target: Node) -> bool:
 	var res = distance <= attack_range
 	return res
 	
-func move_away_from(target: Node, delta: float) -> void:
-	#var direction = (self.position - target.position).normalized()
-	#var desired_distance = 200  # pixels away
-	#if self.position.distance_to(target.position) < desired_distance:
-		#self.position += direction * (move_speed / 2) * delta
-	mover.move_away(target.position, delta)
+#func move_away_from(target: Node, delta: float) -> void:
+	##var direction = (self.position - target.position).normalized()
+	##var desired_distance = 200  # pixels away
+	##if self.position.distance_to(target.position) < desired_distance:
+		##self.position += direction * (move_speed / 2) * delta
+	#mover.move_away(target.position, delta)
 
 
 func move_toward_target(target: Node, delta: float) -> void:
@@ -206,3 +245,39 @@ func on_hit(amount: int = 0):
 
 func on_death():
 	fsm.switch_state(FsmState.StateId.DEAD)
+
+func select_best_move(context: FighterContext) -> MoveData:
+	var best_move: MoveData = null
+	var distance := context.distance_to_target
+	var stamina := context.self_fighter.stamina
+
+	for move in moves:
+		if not move: continue
+		if move.stamina_cost > stamina:
+			continue
+
+		# Prioritize close-range if we're close, or ranged if far
+		if distance < 60.0 and move.knockback < 0.5:
+			best_move = move
+			break
+		elif distance >= 60.0 and move.knockback >= 0.5:
+			best_move = move
+			break
+	
+	# Fallback to any usable move if nothing matched above
+	if not best_move:
+		for move in moves:
+			if move and move.stamina_cost <= stamina:
+				best_move = move
+				break
+
+	# If absolutely no usable move, return null (can be handled as idle or block)
+	return best_move
+
+func get_move_by_name(name: String) -> MoveData:
+	for move in moves:
+		if move.name == name:
+			return move
+	return null
+
+#endregion
