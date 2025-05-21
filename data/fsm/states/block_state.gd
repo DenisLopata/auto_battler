@@ -13,14 +13,28 @@ func exit():
 
 func update(delta: float) -> void:
 	var context = fighter.context
+	var intent := fighter.context.intent
+	var intent_type := intent.type
 
-	# If no longer intending to block, decide next action
-	if context.intent.type != IntentTypes.IntentType.BLOCK:
-		if fighter.behavior.should_attack(context):
+	## If no longer intending to block, decide next action
+	#if intent_type != IntentTypes.IntentType.BLOCK:
+		#if fighter.behavior.should_attack(context):
+			#fsm.switch_state(StateId.ATTACK)
+		#elif fighter.behavior.should_retreat(context):
+			#fsm.switch_state(StateId.RETREAT)
+		#elif fighter.behavior.should_move(context):
+			#fsm.switch_state(StateId.MOVE)
+		#else:
+			#fsm.switch_state(StateId.IDLE)
+			
+	match intent_type:
+		IntentTypes.IntentType.RETREAT:
+			fsm.switch_state(StateId.MOVE)  # Or StateId.RETREAT if separate
+		IntentTypes.IntentType.ATTACK:
 			fsm.switch_state(StateId.ATTACK)
-		elif fighter.behavior.should_retreat(context):
-			fsm.switch_state(StateId.RETREAT)
-		elif fighter.behavior.should_move(context):
+		IntentTypes.IntentType.MOVE:
 			fsm.switch_state(StateId.MOVE)
-		else:
-			fsm.switch_state(StateId.IDLE)
+		IntentTypes.IntentType.BLOCK:
+			fsm.switch_state(StateId.BLOCK)
+		_:
+			pass  # Remain in Block

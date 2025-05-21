@@ -30,17 +30,17 @@ func enter():
 	await fighter.visuals.animation_finished
 
 	# Refresh context and intent after attack
-	context.update()
-
-	match context.intent.type:
-		IntentTypes.IntentType.MOVE:
-			fsm.switch_state(StateId.MOVE)
-		IntentTypes.IntentType.RETREAT:
-			fsm.switch_state(StateId.MOVE)  # Or RETREAT if separate
-		IntentTypes.IntentType.BLOCK:
-			fsm.switch_state(StateId.BLOCK)
-		_:
-			fsm.switch_state(StateId.IDLE)
+	context.update(fighter)
+	if fighter.fsm.is_in_state(StateId.ATTACK):
+		match context.intent.type:
+			IntentTypes.IntentType.MOVE:
+				fsm.switch_state(StateId.MOVE)
+			IntentTypes.IntentType.RETREAT:
+				fsm.switch_state(StateId.MOVE)  # Or RETREAT if separate
+			IntentTypes.IntentType.BLOCK:
+				fsm.switch_state(StateId.BLOCK)
+			_:
+				fsm.switch_state(StateId.IDLE)
 
 #func enter():
 	#var move = fighter.default_move

@@ -15,3 +15,16 @@ func set_intent(type: IntentTypes.IntentType, move_name := "", target_position :
 
 func clear():
 	set_intent(IntentTypes.IntentType.NONE)
+
+func type_string() -> String:
+	match type:
+		IntentTypes.IntentType.ATTACK:
+			return "ATTACK"
+		IntentTypes.IntentType.RETREAT:
+			return "RETREAT"
+		IntentTypes.IntentType.BLOCK:
+			return "BLOCK"
+		IntentTypes.IntentType.MOVE:
+			return "MOVE"
+		_:
+			return "IDLE"

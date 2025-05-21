@@ -1,3 +1,4 @@
+# res://characters/base_fighter.gd
 class_name BaseFighter
 extends Node
 
@@ -36,15 +37,19 @@ signal victory_animation_finished(fighter: BaseFighter)
 
 # Battle status
 var health: int : set = set_health
-var stamina: int : set = set_stamina
-var special_meter: int : set = set_special_meter
+var stamina: float : set = set_stamina
+	
+var special_meter: float : set = set_special_meter
 var morale: float = 1.0
 var fatigue: float = 0.0
 var injured: bool = false
 
+
 var context: FighterContext
 
 var is_blocking: bool = false
+
+var fight_is_active: bool = true
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
@@ -62,13 +67,14 @@ func set_health(value: int) -> void:
 		health = clamped
 		health_changed.emit()
 
-func set_stamina(value: int) -> void:
+func set_stamina(value: float) -> void:
 	var clamped = clamp(value, 0, max_stamina())
 	if clamped != stamina:
 		stamina = clamped
 		stamina_changed.emit()
 
-func set_special_meter(value: int) -> void:
+		
+func set_special_meter(value: float) -> void:
 	var clamped = clamp(value, 0, max_special())
 	if clamped != special_meter:
 		special_meter = clamped
@@ -81,9 +87,19 @@ func set_special_meter(value: int) -> void:
 func _process(delta):
 	if attack_cooldown > 0:
 		attack_cooldown -= delta
+		
 	
-	context.update()
+	if not fight_is_active:
+		return
+		
+	context.update(self)
 	move_controller.update(delta)
+	
+	var add_stm = get_stamina_regen_rate() * delta
+	if add_stm > 0:
+		stamina += add_stm
+	
+
 		
 func _ready():
 	health = max_health()
@@ -136,11 +152,11 @@ func max_health() -> int:
 	var total = get_total_stats().endurance * 10
 	return total
 	
-func max_stamina() -> int:
+func max_stamina() -> float:
 	var total = get_total_stats().agility * 5
 	return total
 
-func max_special() -> int:
+func max_special() -> float:
 	var total = get_total_stats().technique * 10
 	return total
 	
@@ -186,9 +202,11 @@ func can_attack(on_hit: bool) -> bool:
 func reset_attack_cooldown():
 	attack_cooldown = get_attack_speed()
 
-func apply_damage(amount: int):
+func apply_damage(amount: int) -> bool:
+	var was_blocked: bool = false
 	if is_blocking:
 		amount *= 0.3
+		was_blocked = true
 		
 	health -= amount
 	if health < 0:
@@ -196,6 +214,7 @@ func apply_damage(amount: int):
 	health_changed.emit()
 	#visuals.flash_hit()
 	on_hit(amount)
+	return was_blocked
 	
 func use_stamina(on_hit: bool):
 	var cost = get_stamina_cost(on_hit)
@@ -210,13 +229,33 @@ func is_in_range(target: Node) -> bool:
 	var res = distance <= attack_range
 	return res
 	
-#func move_away_from(target: Node, delta: float) -> void:
-	##var direction = (self.position - target.position).normalized()
-	##var desired_distance = 200  # pixels away
-	##if self.position.distance_to(target.position) < desired_distance:
-		##self.position += direction * (move_speed / 2) * delta
-	#mover.move_away(target.position, delta)
 
+func get_stamina_regen_rate() -> float:
+	var base_rate := 0.8  # stamina per second
+	
+	
+	# Adjust based on state
+	match fsm.current_state_id:
+		FsmState.StateId.RETREAT:
+			base_rate *= 1.5
+		FsmState.StateId.IDLE:
+			base_rate *= 1.2
+		FsmState.StateId.BLOCK:
+			base_rate *= 0.8
+		FsmState.StateId.ATTACK:
+			base_rate = 0.0
+
+	# Apply trait modifiers (if implemented)
+	#base_rate += get_trait_stamina_regen_bonus()
+
+	return base_rate
+
+func add_special(amount: float = 1) -> void:
+	var base_rate := 1.0
+	
+	special_meter += amount * base_rate
+	special_meter = clamp(special_meter, 0, max_special())
+	special_meter_changed.emit()
 
 func move_toward_target(target: Node, delta: float) -> void:
 	#var direction = (target.position - self.position).normalized()

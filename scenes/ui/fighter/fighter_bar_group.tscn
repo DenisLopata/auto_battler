@@ -25,3 +25,12 @@ theme = ExtResource("1_r4o5f")
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_r4o5f")
+
+[node name="DebugStatsLabel" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(0, 150)
+layout_mode = 2
+theme = ExtResource("1_r4o5f")
+theme_override_font_sizes/normal_font_size = 6
+theme_override_font_sizes/bold_font_size = 7
+bbcode_enabled = true
+text = "test test"

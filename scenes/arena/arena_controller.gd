@@ -52,7 +52,10 @@ func end_fight(winner: Fighter, loser: Fighter):
 	if fight_over:
 		return
 	fight_over = true
-
+	
+	winner.fight_is_active = false
+	loser.fight_is_active = false
+	
 	print("%s is defeated! %s wins!" % [loser.fighter_name, winner.fighter_name])
 	fight_ended.emit(winner, loser)
 
@@ -87,8 +90,14 @@ func _on_attack_hit_window(attacker: Fighter):
 
 	if does_attack_hit(attacker, defender):
 		var damage = calculate_damage(attacker, defender)
-		defender.apply_damage(damage)
-		#camera_rig.punch_zoom_effect()
+		var was_blocked: = defender.apply_damage(damage)
+		
+		attacker.add_special(2)
+		if was_blocked:
+			defender.add_special(10)
+		else:	
+			defender.add_special(0.5)
+		
 		camera_rig.punch_zoom_effect(0.4)
 		var move = attacker.default_move
 		if  move.causes_camera_slowmo_on_ko:

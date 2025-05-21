@@ -1,22 +1,25 @@
 class_name Fighter
 extends BaseFighter
 
+@onready var debug_label: RichTextLabel = $DebugLabel
+@export var debug_enabled: bool = true
+
+func _process(_delta: float) -> void:
+	if debug_enabled:
+		update_debug_label()
+		debug_label.visible = true
+	else:
+		debug_label.visible = false
+	
+	super._process(_delta)
 
 func _ready() -> void:
-	
-	#self.base_stats.endurance = 10
-	#
-	##stamina
-	#self.base_stats.agility = 100
-	#
-	##special
-	#self.base_stats.technique = 10
-	#self.special_meter = 4
-	#
-	##strength
-	#self.base_stats.strength = 10
 	super._ready()
 
-func receive_damage(amount: int):
-	health = max(health - amount, 0)
-	health_changed.emit()
+func update_debug_label() -> void:
+	
+	var fighter_intent: FighterIntent = context.intent
+	var state_text: String = fsm.get_current_state_name()
+	var intent_text := fighter_intent.type_string()  # Assuming you have a method or property for this
+	
+	debug_label.text = "State: %s\nIntent: %s" % [state_text, intent_text]

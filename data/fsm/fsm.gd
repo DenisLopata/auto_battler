@@ -39,3 +39,21 @@ func _physics_process(delta):
 	
 func is_in_state(state_id: int) -> bool:
 	return current_state_id == state_id
+	
+func get_current_state_name() -> String:
+	return current_state_id_to_string()
+
+func current_state_id_to_string() -> String:
+	match current_state_id:
+		FsmState.StateId.IDLE:
+			return "IDLE"
+		FsmState.StateId.ATTACK:
+			return "ATTACK"
+		FsmState.StateId.MOVE:
+			return "MOVE"
+		FsmState.StateId.BLOCK:
+			return "BLOCK"
+		FsmState.StateId.RETREAT:
+			return "RETREAT"
+		_:
+			return "UNKNOWN"

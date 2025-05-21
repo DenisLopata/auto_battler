@@ -3,7 +3,7 @@ class_name FighterBehavior
 extends RefCounted
 
 
-static func should_retreat(fighter: BaseFighter, opponent: BaseFighter) -> bool:
+static func should_retreat_old(fighter: BaseFighter, opponent: BaseFighter) -> bool:
 	var max_health = fighter.max_health()
 	var health_ratio = float(fighter.health) / float(max_health)
 

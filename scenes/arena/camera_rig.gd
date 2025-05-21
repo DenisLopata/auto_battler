@@ -6,8 +6,9 @@ extends Node2D
 
 @export var world_bounds := Rect2(Vector2.ZERO, Vector2(1024, 1024))
 #@export var default_position := Vector2(512, 512)
-@export var default_position := Vector2(320, -320)
-@export var vertical_limits := Vector2(200, 824) # Min Y, Max Y
+@export var default_position := Vector2(320, -120)
+#@export var vertical_limits := Vector2(200, 824) # Min Y, Max Y
+@export var vertical_limits := Vector2(0, 824) # Min Y, Max Y
 
 var target_position: Vector2
 var target_zoom: Vector2 = Vector2.ONE
@@ -20,9 +21,10 @@ var base_zoom := Vector2.ONE
 var punch_target_zoom := Vector2.ONE
 var punch_timer := 0.0
 var punch_duration := 0.25
-var punch_cooldown := 0.1
+#var punch_cooldown := 0.1
+var punch_cooldown := 10
 var last_punch_time := -10.0
-var max_punch_amount := 0.1
+var max_punch_amount := 0.8
 
 
 @onready var dynamic_camera: Camera2D = $DynamicCamera
@@ -78,4 +80,7 @@ func punch_zoom_effect(strength := 1.0):
 	punch_timer = punch_duration
 
 	var punch_amount = clamp(strength, 0.0, 1.0) * max_punch_amount
+	#	zoom out
 	punch_target_zoom = base_zoom * (1.0 - punch_amount)
+	#	zoom in
+	#punch_target_zoom = base_zoom * (1.0 + punch_amount)

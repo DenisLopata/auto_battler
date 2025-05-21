@@ -12,3 +12,12 @@ enum IntentType {
 	COUNTER,
 	COMBO
 }
+
+static func get_type_string(intent_type: IntentType) -> String:
+	match intent_type:
+		IntentType.RETREAT: return "Retreat"
+		IntentType.ATTACK: return "Attack"
+		IntentType.BLOCK: return "Block"
+		IntentType.MOVE: return "Move"
+		IntentType.IDLE: return "Idle"
+		_: return "Unknown"

@@ -42,13 +42,17 @@ func start_fight():
 	randomize_stats(fighter_left)
 	randomize_stats(fighter_right)
 	
+	#debug stats
+	#fighter_left.base_stats.endurance = 1
+	#fighter_left.base_stats.agility = 1
+	
 	# Add to scene
 	add_child(fighter_left)
 	add_child(fighter_right)
 	
 	# Place them
-	fighter_left.position = Vector2(200, 90)
-	fighter_right.position = Vector2(400, 90)
+	fighter_left.position = Vector2(200, 150)
+	fighter_right.position = Vector2(400, 150)
 	
 	#rotate sprite
 	fighter_right.flip_sprite(true)
