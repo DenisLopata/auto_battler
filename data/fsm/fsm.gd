@@ -47,13 +47,23 @@ func current_state_id_to_string() -> String:
 	match current_state_id:
 		FsmState.StateId.IDLE:
 			return "IDLE"
-		FsmState.StateId.ATTACK:
-			return "ATTACK"
 		FsmState.StateId.MOVE:
 			return "MOVE"
+		FsmState.StateId.ATTACK:
+			return "ATTACK"
+		FsmState.StateId.HIT:
+			return "HIT"
+		FsmState.StateId.DEAD:
+			return "DEAD"
+		FsmState.StateId.VICTORY:
+			return "VICTORY"
 		FsmState.StateId.BLOCK:
 			return "BLOCK"
 		FsmState.StateId.RETREAT:
 			return "RETREAT"
+		FsmState.StateId.SPECIAL:
+			return "SPECIAL"
+		FsmState.StateId.SPECIAL_PASSIVE:
+			return "SPECIAL_PASSIVE"
 		_:
 			return "UNKNOWN"

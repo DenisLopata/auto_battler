@@ -9,7 +9,9 @@ enum StateId {
 	DEAD,
 	VICTORY,
 	BLOCK,
-	RETREAT
+	RETREAT,
+	SPECIAL,
+	SPECIAL_PASSIVE
 }
 
 var fsm: Fsm

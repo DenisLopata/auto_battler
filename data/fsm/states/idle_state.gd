@@ -21,6 +21,8 @@ func update(_delta: float) -> void:
 			fsm.switch_state(StateId.MOVE)
 		IntentTypes.IntentType.BLOCK:
 			fsm.switch_state(StateId.BLOCK)
+		IntentTypes.IntentType.SPECIAL:
+			fsm.switch_state(StateId.SPECIAL)
 		_:
 			pass  # Remain in Idle
 	#

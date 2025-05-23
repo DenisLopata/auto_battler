@@ -25,7 +25,7 @@ func enter():
 		return
 
 	fighter.visuals.play(move.animation_name)
-	fighter.move_controller.start_move(move)
+	fighter.move_controller.start_move(move, fighter.visuals)
 
 	await fighter.visuals.animation_finished
 
@@ -39,6 +39,8 @@ func enter():
 				fsm.switch_state(StateId.MOVE)  # Or RETREAT if separate
 			IntentTypes.IntentType.BLOCK:
 				fsm.switch_state(StateId.BLOCK)
+			IntentTypes.IntentType.SPECIAL:
+				fsm.switch_state(StateId.SPECIAL)
 			_:
 				fsm.switch_state(StateId.IDLE)
 

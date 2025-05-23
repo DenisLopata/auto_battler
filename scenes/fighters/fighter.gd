@@ -5,9 +5,13 @@ extends BaseFighter
 @export var debug_enabled: bool = true
 
 func _process(_delta: float) -> void:
-	if debug_enabled:
+	if OS.is_debug_build():
 		update_debug_label()
 		debug_label.visible = true
+		if self.name.contains("FighterLeft"):
+			debug_label.position.y = -75
+		if self.name.contains("FighterRight"):
+			debug_label.position.y = -100
 	else:
 		debug_label.visible = false
 	

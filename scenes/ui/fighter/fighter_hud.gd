@@ -48,6 +48,10 @@ func _update_bars(fighter: Fighter, group: VBoxContainer):
 	
 	if OS.is_debug_build():
 		_update_debug_stats(fighter, group)
+	else:
+		var label := group.get_node("DebugStatsLabel") as RichTextLabel
+		label.clear()
+		
 
 
 func _update_debug_stats(fighter: Fighter, group: VBoxContainer):

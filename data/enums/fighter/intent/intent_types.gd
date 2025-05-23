@@ -10,14 +10,20 @@ enum IntentType {
 	MOVE,
 	IDLE,
 	COUNTER,
-	COMBO
+	COMBO,
+	SPECIAL,
+	SPECIAL_PASSIVE
 }
 
 static func get_type_string(intent_type: IntentType) -> String:
 	match intent_type:
-		IntentType.RETREAT: return "Retreat"
 		IntentType.ATTACK: return "Attack"
 		IntentType.BLOCK: return "Block"
+		IntentType.RETREAT: return "Retreat"
 		IntentType.MOVE: return "Move"
 		IntentType.IDLE: return "Idle"
+		IntentType.COUNTER: return "Counter"
+		IntentType.COMBO: return "Combo"
+		IntentType.SPECIAL: return "Special"
+		IntentType.SPECIAL_PASSIVE: return "Special_Passive"
 		_: return "Unknown"

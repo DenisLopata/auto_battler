@@ -45,6 +45,18 @@ func should_block(context: FighterContext) -> bool:
 
 	return false
 
+func should_special(context: FighterContext) -> bool:
+	var res = false
+	
+	var fighter: BaseFighter = context.self_fighter
+	var special = fighter.special_meter
+	var max_special = fighter.max_special()
+	
+	if special == max_special:
+		res = true
+	
+	return res
+	
 func should_retreat(context: FighterContext) -> bool:
 	var now = Time.get_ticks_msec() / 1000.0
 	if now - context.last_retreat_time < context.retreat_cooldown:
@@ -75,7 +87,8 @@ func should_retreat(context: FighterContext) -> bool:
 	var decision = randf() < clamp(retreat_weight, 0.0, 1.0)
 
 	if decision == true:
-		print_debug_retreat(context, retreat_weight, health_ratio, stamina_ratio, opponent_meter)
+		pass
+		#print_debug_retreat(context, retreat_weight, health_ratio, stamina_ratio, opponent_meter)
 
 	return decision
 	
@@ -90,7 +103,12 @@ func evaluate_intent(context: FighterContext) -> void:
 		
 	var fighter := context.self_fighter
 	var intent := context.intent
-
+	
+	if should_special(context):
+		intent.set_intent(IntentTypes.IntentType.SPECIAL, "Basic Special")
+		return
+		
+	
 	# Retreat has top priority
 	if should_retreat(context):
 		context.last_retreat_time = Time.get_ticks_msec() / 1000.0

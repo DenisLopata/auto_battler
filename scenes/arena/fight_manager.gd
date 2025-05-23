@@ -39,8 +39,18 @@ func start_fight():
 	fighter_left.fighter_name = get_random_name()
 	fighter_right.fighter_name = get_random_name()
 	
-	randomize_stats(fighter_left)
-	randomize_stats(fighter_right)
+	#randomize_stats(fighter_left)
+	#randomize_stats(fighter_right)
+	
+	#apply_archetype_stats(fighter_left, "Strength")
+	#apply_archetype_stats(fighter_left, "Endurance")
+	#apply_archetype_stats(fighter_left, "Technique")
+	apply_archetype_stats(fighter_left, "Agility")
+	
+	#apply_archetype_stats(fighter_right, "Strength")
+	#apply_archetype_stats(fighter_right, "Endurance")
+	#apply_archetype_stats(fighter_right, "Technique")
+	apply_archetype_stats(fighter_right, "Agility")
 	
 	#debug stats
 	#fighter_left.base_stats.endurance = 1
@@ -49,6 +59,8 @@ func start_fight():
 	# Add to scene
 	add_child(fighter_left)
 	add_child(fighter_right)
+	fighter_left.name = "FighterLeft"
+	fighter_right.name = "FighterRight"
 	
 	# Place them
 	fighter_left.position = Vector2(200, 150)
@@ -100,5 +112,37 @@ func randomize_stats(fighter: Fighter):
 	stats.agility = randi_range(5, 15)
 	fighter.base_stats = stats
 
+func apply_archetype_stats(fighter: Fighter, archetype: String) -> void:
+	var stats := FighterStats.new()
+
+	match archetype:
+		"Strength":
+			stats.strength = 20
+			stats.endurance = 10
+			stats.technique = 5
+			stats.agility = 5
+		"Endurance":
+			stats.strength = 8
+			stats.endurance = 20
+			stats.technique = 6
+			stats.agility = 6
+		"Technique":
+			stats.strength = 6
+			stats.endurance = 8
+			stats.technique = 20
+			stats.agility = 6
+		"Agility":
+			stats.strength = 7
+			stats.endurance = 6
+			stats.technique = 7
+			stats.agility = 20
+		_:
+			# Default random
+			stats.strength = randi_range(5, 15)
+			stats.endurance = randi_range(5, 15)
+			stats.technique = randi_range(5, 15)
+			stats.agility = randi_range(5, 15)
+
+	fighter.base_stats = stats
 
 #endregion

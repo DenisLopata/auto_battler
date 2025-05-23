@@ -11,7 +11,7 @@ const BASE_ATTACK_COOLDOWN := 3.0
 signal health_changed
 signal stamina_changed
 signal special_meter_changed
-signal attack_hit_window(fighter: BaseFighter)
+signal attack_hit_window(fighter: BaseFighter, move: MoveData)
 signal victory_animation_finished(fighter: BaseFighter)
 
 # Core Stats
@@ -19,6 +19,7 @@ signal victory_animation_finished(fighter: BaseFighter)
 @export var style: int = FighterClasses.FighterStyle.BALANCED
 @export var level: int = 1
 @export var experience: int = 0
+@export var special_meter_max: float = 100.0
 
 @export var base_stats: FighterStats = FighterStats.new()
 @export var traits: Array[FighterTrait] = []
@@ -128,20 +129,25 @@ func _ready():
 	var ml = MoveLibrary.new()
 	var move_data = ml.create_basic_punch()
 	moves.append(move_data)
+	
+	var special = ml.create_basic_special()
+	moves.append(special)
+	
 	self.default_move = move_data
 	
-	move_controller.attack_window_started.connect(_on_attack_window_started)
-	move_controller.move_finished.connect(_on_move_finished)
+	#move_controller.attack_window_started.connect(_on_attack_window_started)
+	#move_controller.move_finished.connect(_on_move_finished)
 
 #endregion
 
 #region Signals
 
-func _on_attack_window_started(move: MoveData):
-	emit_attack_hit_window()
+#func _on_attack_window_started(move: MoveData):
+	##emit_attack_hit_window(move)
+	#emit_attack_hit_window()
 
-func _on_move_finished(move: MoveData):
-	print("Move finished: ", move.name)
+#func _on_move_finished(move: MoveData):
+	#print("Move finished: ", move.name)
 
 
 #endregion
@@ -157,7 +163,8 @@ func max_stamina() -> float:
 	return total
 
 func max_special() -> float:
-	var total = get_total_stats().technique * 10
+	#var total = get_total_stats().technique * 10
+	var total = special_meter_max
 	return total
 	
 func get_total_stats() -> FighterStats:
@@ -204,6 +211,7 @@ func reset_attack_cooldown():
 
 func apply_damage(amount: int) -> bool:
 	var was_blocked: bool = false
+	
 	if is_blocking:
 		amount *= 0.3
 		was_blocked = true
@@ -251,9 +259,11 @@ func get_stamina_regen_rate() -> float:
 	return base_rate
 
 func add_special(amount: float = 1) -> void:
-	var base_rate := 1.0
 	
-	special_meter += amount * base_rate
+	var tech_multiplier := get_total_stats().technique / 10.0  # or some balanced factor
+	var fill_rate := 1.0 + tech_multiplier  # So technique 10 = 2.0x, technique 5 = 1.5x
+	
+	special_meter += amount * fill_rate
 	special_meter = clamp(special_meter, 0, max_special())
 	special_meter_changed.emit()
 
@@ -277,7 +287,11 @@ func is_playing_attack_animation() -> bool:
 	return visuals.is_playing_attack()
 	
 func emit_attack_hit_window():
-	attack_hit_window.emit(self)
+	var selected_move = move_controller.current_move
+	attack_hit_window.emit(self, selected_move)
+	
+#func emit_attack_hit_window(move: MoveData):
+	#attack_hit_window.emit(self, move)
 
 func on_hit(amount: int = 0):
 	fsm.switch_state(FsmState.StateId.HIT)
@@ -292,6 +306,7 @@ func select_best_move(context: FighterContext) -> MoveData:
 
 	for move in moves:
 		if not move: continue
+		if "special" in move.tags: continue # ❌ Skip special moves
 		if move.stamina_cost > stamina:
 			continue
 
@@ -306,7 +321,8 @@ func select_best_move(context: FighterContext) -> MoveData:
 	# Fallback to any usable move if nothing matched above
 	if not best_move:
 		for move in moves:
-			if move and move.stamina_cost <= stamina:
+			if move and move.stamina_cost <= stamina \
+			 and "special" not in move.tags:
 				best_move = move
 				break
 

@@ -26,5 +26,9 @@ func type_string() -> String:
 			return "BLOCK"
 		IntentTypes.IntentType.MOVE:
 			return "MOVE"
+		IntentTypes.IntentType.SPECIAL:
+			return "SPECIAL"
+		IntentTypes.IntentType.SPECIAL_PASSIVE:
+			return "SPECIAL_PASSIVE"
 		_:
 			return "IDLE"

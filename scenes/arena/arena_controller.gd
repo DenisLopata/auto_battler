@@ -69,12 +69,47 @@ func does_attack_hit(attacker: Fighter, defender: Fighter) -> bool:
 	var chance = clamp(hit_chance, 0.1, 0.95)
 	var res = rand < chance
 	return res
-	
+
 func calculate_damage(attacker: Fighter, defender: Fighter) -> int:
-	var base = attacker.get_total_stat("strength") * 2
-	var reduction = defender.get_total_stat("endurance") * 0.5
-	var res =  max(1, base - reduction)
-	return res
+	var current_move: MoveData = attacker.move_controller.current_move
+	if not current_move:
+		return 1  # fallback if no move data
+	
+	# Extract stats
+	var strength = attacker.get_total_stat("strength")
+	var endurance = defender.get_total_stat("endurance")
+
+	# Move and stat influence
+	var move_dmg = current_move.damage
+	var strength_mult = 0.5
+	var reduction = endurance * 0.5
+
+	# Special multiplier
+	var special_mult = 1.0
+	if "special" in current_move.tags:
+		special_mult = 1.0  # or 1.5 if you prefer less burst
+
+	# Final damage formula
+	var raw_damage = (move_dmg + strength * strength_mult) * special_mult
+	var final_damage = max(1, int(raw_damage - reduction))
+
+	return final_damage
+
+#
+#func calculate_damage(attacker: Fighter, defender: Fighter) -> int:
+	#var base = attacker.get_total_stat("strength") * 2
+	#var reduction = defender.get_total_stat("endurance") * 0.5
+	#
+	##we need to implement this logic
+	#var current_move: MoveData = attacker.move_controller.current_move
+	#if current_move:
+		#var move_dmg = current_move.damage
+		#var is_special = false
+		#if "special" in current_move.tags:
+			#is_special = true
+	#
+	#var res =  max(1, base - reduction)
+	#return res
 
 func show_miss_effect() -> void:
 	print("Attack missed!")
@@ -85,10 +120,15 @@ func _on_victory_animation_finished(attacker: BaseFighter) -> void:
 	#show_win_screen()
 	pass
 	
-func _on_attack_hit_window(attacker: Fighter):
+func _on_attack_hit_window(attacker: Fighter, move: MoveData):
 	var defender = fighter_right if attacker == fighter_left else fighter_left
-
-	if does_attack_hit(attacker, defender):
+	
+	var does_hit = false
+	if "special" in move.tags:
+		does_hit = true
+	else:
+		does_hit = does_attack_hit(attacker, defender)
+	if does_hit:
 		var damage = calculate_damage(attacker, defender)
 		var was_blocked: = defender.apply_damage(damage)
 		
@@ -99,7 +139,7 @@ func _on_attack_hit_window(attacker: Fighter):
 			defender.add_special(0.5)
 		
 		camera_rig.punch_zoom_effect(0.4)
-		var move = attacker.default_move
+		#var default_move = attacker.default_move
 		if  move.causes_camera_slowmo_on_ko:
 			trigger_slowmo(move.slowmo_duration, move.slowmo_timescale)
 
