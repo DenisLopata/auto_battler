@@ -12,28 +12,30 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_3ubeg")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -106.0
-offset_top = -74.0
-offset_right = 106.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+theme_override_constants/margin_top = 150
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_constants/separation = 10
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("1_pxbjp")
 text = "Place Your Bet"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="ScoreLabel" type="Label" parent="VBoxContainer"]
+[node name="ScoreLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_pxbjp")
 theme_override_font_sizes/font_size = 16
@@ -41,21 +43,25 @@ text = "Score"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="FighterButtons" type="HBoxContainer" parent="VBoxContainer"]
+[node name="FighterButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 100
 alignment = 1
 
-[node name="FighterButtonLeft" type="Button" parent="VBoxContainer/FighterButtons"]
+[node name="FighterButtonLeft" type="Button" parent="MarginContainer/VBoxContainer/FighterButtons"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_pxbjp")
 text = "Choose"
 
-[node name="FighterButtonRight" type="Button" parent="VBoxContainer/FighterButtons"]
+[node name="FighterButtonRight" type="Button" parent="MarginContainer/VBoxContainer/FighterButtons"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_pxbjp")
 text = "Choose"
 
-[node name="ConfirmButton" type="Button" parent="VBoxContainer"]
+[node name="ConfirmButton" type="Button" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_pxbjp")
 text = "Lock Bet"

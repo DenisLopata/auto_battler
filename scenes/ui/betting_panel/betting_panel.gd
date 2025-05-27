@@ -8,10 +8,10 @@ var left_fighter: Fighter
 var right_fighter: Fighter
 var selected_fighter: Fighter = null
 
-@onready var button_left: Button = $VBoxContainer/FighterButtons/FighterButtonLeft
-@onready var button_right: Button = $VBoxContainer/FighterButtons/FighterButtonRight
-@onready var confirm_button: Button = $VBoxContainer/ConfirmButton
-@onready var score_label: Label = $VBoxContainer/ScoreLabel
+@onready var button_left: Button = %FighterButtonLeft
+@onready var button_right: Button = %FighterButtonRight
+@onready var confirm_button: Button = %ConfirmButton
+@onready var score_label: Label = %ScoreLabel
 
 func _ready():
 	button_left.pressed.connect(_on_left_pressed)
