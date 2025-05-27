@@ -55,7 +55,7 @@ func create_basic_special() -> MoveData:
 	move.interruptible_start_frame = 0
 	move.interruptible_end_frame = 0
 	move.causes_camera_shake_on_hit = true
-	move.causes_camera_slowmo_on_ko = false
+	move.causes_camera_slowmo_on_ko = true
 	#move.tags = ["punch", "special", "close"]
 	#move.tags = PackedStringArray(["punch", "special", "close"])  # or Array(["punch", "special", "close"])
 	move.tags.clear()

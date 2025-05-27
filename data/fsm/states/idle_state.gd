@@ -11,7 +11,6 @@ func enter():
 
 func update(_delta: float) -> void:
 	var intent := fighter.context.intent
-
 	match intent.type:
 		IntentTypes.IntentType.RETREAT:
 			fsm.switch_state(StateId.MOVE)  # Or StateId.RETREAT if separate

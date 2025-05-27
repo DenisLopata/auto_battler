@@ -50,7 +50,7 @@ var context: FighterContext
 
 var is_blocking: bool = false
 
-var fight_is_active: bool = true
+var fight_is_active: bool = false
 
 @onready var sprite_2d: Sprite2D = $Sprite2D
 @onready var animation_player: AnimationPlayer = $AnimationPlayer

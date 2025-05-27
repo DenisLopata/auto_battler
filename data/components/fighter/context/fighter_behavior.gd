@@ -7,8 +7,11 @@ func should_move(context: FighterContext) -> bool:
 	return res
 
 func should_attack(context: FighterContext) -> bool:
-	var res = context.distance_to_target <= context.self_fighter.attack_range and context.attack_cooldown <= 0
-	return res
+	var in_range := context.distance_to_target <= context.self_fighter.attack_range
+	var cooldown_ready := context.attack_cooldown <= 0
+	var result := in_range and cooldown_ready
+	return result
+
 
 #func should_retreat(context: FighterContext) -> bool:
 	#return context.current_hp < (context.max_hp * 0.3)

@@ -1,3 +1,4 @@
+class_name ArenaController
 extends Node
 
 signal fight_ended(winner: Fighter, loser: Fighter)
@@ -9,6 +10,8 @@ var fighter_left: Fighter = null
 var fighter_right: Fighter = null
 
 var camera_rig: Node2D
+var background_image: TextureRect
+var background_overlay: TextureRect
 
 func _end_fight(winner: Fighter):
 	print("Battle Over! Winner: %s" % winner.fighter_name)
@@ -30,6 +33,8 @@ func set_fighters(left: Fighter, right: Fighter):
 	
 func start_fight():
 	fight_over = false
+	fighter_left.fight_is_active = true
+	fighter_right.fight_is_active = true
 
 func try_attack(attacker: Fighter, defender: Fighter):
 	var on_hit = true
@@ -165,3 +170,47 @@ func trigger_slowmo(duration: float, timescale: float):
 	
 	var tween = get_tree().create_tween()
 	tween.tween_property(Engine, "time_scale", 1.0, 0.3)
+
+#region Backgrounds
+
+func get_available_backgrounds() -> Array:
+	return [
+		preload("res://assets/backgrounds/base_set/majestic_peaks.png"),
+		preload("res://assets/backgrounds/base_set/payramid_desert_sun.png"),
+		preload("res://assets/backgrounds/base_set/showdown_in_valley.png"),
+		preload("res://assets/backgrounds/base_set/village_market_festival.png"),
+		preload("res://assets/backgrounds/base_set/traditional_dojo.png"),
+		preload("res://assets/backgrounds/base_set/historic_wall.png"),
+		preload("res://assets/backgrounds/base_set/urban_street_fight.png"),
+		preload("res://assets/backgrounds/base_set/sunlit_alleyway.png"),
+		preload("res://assets/backgrounds/base_set/industrial_factory_interior.png"),
+		preload("res://assets/backgrounds/base_set/noche_en_el_santuario.png")
+	]
+
+
+func set_background(texture: Texture):
+	if background_image.texture == texture:
+		return
+
+	# Optional: Add a shader or animation effect here before switching.
+	# For now, simple swap:
+	background_image.texture = texture
+	
+	var new_bg = texture
+	
+	var mat := background_overlay.material as ShaderMaterial
+	mat.set_shader_parameter("transition_progress", 0.0)
+	background_overlay.visible = false
+	
+	# Animate transition
+	var tween := get_tree().create_tween()
+	tween.tween_property(mat, "shader_parameter/transition_progress", 1.0, 1.2).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.finished.connect(func():
+		background_image.texture = new_bg
+		mat.set_shader_parameter("transition_progress", 0.0)  # Reset
+		mat.set_shader_parameter("old_texture", new_bg)  # Reset
+		background_overlay.visible = false
+	)
+	
+
+#endregion

@@ -1,19 +1,25 @@
-[gd_scene load_steps=11 format=3 uid="uid://df2u0x7as78i3"]
+[gd_scene load_steps=16 format=3 uid="uid://df2u0x7as78i3"]
 
 [ext_resource type="Script" uid="uid://qx70k73qbed6" path="res://scenes/arena/arena_main.gd" id="1_0w8lr"]
 [ext_resource type="PackedScene" uid="uid://cpuxaae705hxw" path="res://scenes/fighters/Fighter.tscn" id="1_bq1rl"]
 [ext_resource type="Script" uid="uid://bhvp7taytdsl3" path="res://scenes/arena/arena_controller.gd" id="2_3ilgy"]
 [ext_resource type="Texture2D" uid="uid://dd1jf11hy2p1c" path="res://assets/backgrounds/basic/Ancient Path to Majestic Peaks.png" id="2_i7jdh"]
-[ext_resource type="Shader" uid="uid://ge7mi2c318ns" path="res://assets/shaders/background_image.gdshader" id="2_veaww"]
+[ext_resource type="Shader" uid="uid://cvg07deefmng2" path="res://assets/shaders/background/background_transition.gdshader" id="2_paj5n"]
 [ext_resource type="PackedScene" uid="uid://coga57yxtjcop" path="res://scenes/ui/fighter/fighter_hud.tscn" id="2_xniir"]
+[ext_resource type="Texture2D" uid="uid://b4et34v71ah1d" path="res://assets/backgrounds/base_set/showdown_in_valley.png" id="3_8hq7r"]
 [ext_resource type="Script" uid="uid://dw2be0inn6tea" path="res://scenes/arena/camera_rig.gd" id="3_i7jdh"]
 [ext_resource type="Theme" uid="uid://cyjb538c0mg2c" path="res://assets/themes/main_theme.tres" id="3_pd5rn"]
+[ext_resource type="Texture2D" uid="uid://o3qe3m8wqcd3" path="res://assets/backgrounds/base_set/payramid_desert_sun.png" id="4_paj5n"]
 [ext_resource type="Script" uid="uid://dn36oeliwqgou" path="res://scenes/arena/fight_manager.gd" id="5_qdlww"]
+[ext_resource type="PackedScene" uid="uid://lpk8b5yjpnc6" path="res://scenes/ui/betting_panel/betting_panel.tscn" id="7_p8l0n"]
+[ext_resource type="Script" uid="uid://dtuamcv66j4gm" path="res://scenes/arena/shader_manager.gd" id="10_hie1i"]
+[ext_resource type="Script" uid="uid://b0vwmtlij5adu" path="res://scenes/arena/bet_manager.gd" id="11_8sn7e"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hie1i"]
-shader = ExtResource("2_veaww")
-shader_parameter/pulse_strength = 0.0
-shader_parameter/tint_color = Color(1, 0, 0.5, 1)
+shader = ExtResource("2_paj5n")
+shader_parameter/old_texture = ExtResource("3_8hq7r")
+shader_parameter/transition_progress = 0.0
+shader_parameter/tile_size = Vector2(16, 16)
 
 [node name="ArenaMain" type="Node2D"]
 script = ExtResource("1_0w8lr")
@@ -28,6 +34,18 @@ offset_right = 1436.0
 offset_bottom = 744.0
 scale = Vector2(0.625, 0.625)
 texture = ExtResource("2_i7jdh")
+stretch_mode = 4
+
+[node name="BackgroundOverlay" type="TextureRect" parent="."]
+visible = false
+top_level = true
+material = SubResource("ShaderMaterial_hie1i")
+offset_left = -100.0
+offset_top = -280.0
+offset_right = 1436.0
+offset_bottom = 744.0
+scale = Vector2(0.625, 0.625)
+texture = ExtResource("4_paj5n")
 stretch_mode = 4
 
 [node name="CameraRig" type="Node2D" parent="."]
@@ -56,9 +74,17 @@ offset_bottom = 32.0
 theme = ExtResource("3_pd5rn")
 text = "Start"
 
+[node name="BettingPanel" parent="UI" instance=ExtResource("7_p8l0n")]
+
 [node name="ArenaController" type="Node" parent="."]
 script = ExtResource("2_3ilgy")
 
 [node name="FightManager" type="Node" parent="."]
 script = ExtResource("5_qdlww")
 fighter_scene = ExtResource("1_bq1rl")
+
+[node name="ShaderManager" type="Node" parent="."]
+script = ExtResource("10_hie1i")
+
+[node name="BetManager" type="Node" parent="."]
+script = ExtResource("11_8sn7e")
