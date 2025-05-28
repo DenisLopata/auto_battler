@@ -132,7 +132,11 @@ var base_name_pool = [
 	"Crusher", "Steel Fist", "Iron Jaw", "Quickstep", "Shadow", "Bruiser", "Rage", "Ghost", "Blitz", "The Wall",
 	"Viper", "Knockout", "Slab", "Scythe", "Fury", "Echo", "Spike", "Venom", "Torque", "Frost",
 	"Brick", "Shiv", "Pyro", "Razor", "Bulldog", "Ox", "Dagger", "Smash", "Phantom", "Talon",
-	"Grit", "Steeltoe", "Howl", "Snap", "Jinx", "Mauler", "Clutch", "Bruin", "Volt", "Fang"
+	"Grit", "Steeltoe", "Howl", "Snap", "Jinx", "Mauler", "Clutch", "Bruin", "Volt", "Fang",
+	"Havoc", "Crusher-X", "Warden", "Ripjaw", "Striker", "Thorn", "Havok", "Blight", "Ruckus", "Drill",
+	"Mire", "Tank", "Pulse", "Onyx", "Thresher", "Grudge", "Snare", "Flare", "Bruise", "Slade",
+	"Rampage", "Quake", "Saber", "Maverick", "Grinder", "Skewer", "Lockjaw", "Hex", "Riptide", "Snarl",
+	"Claw", "Rebar", "Breaker", "Obsidian", "Shatter", "Tusk", "Barrage", "Gouge", "Blitzkrieg", "Feral"
 ]
 
 var mythological_name_pool = [
@@ -142,7 +146,8 @@ var mythological_name_pool = [
 ]
 
 func choose_archetypes() -> Array[String]:
-	var archetypes = ["Strength", "Endurance", "Technique", "Agility"]
+	#var archetypes = ["Strength", "Endurance", "Technique", "Agility"]
+	var archetypes = ["Strength", "Technique", "Agility"]
 
 	if randf() < 0.8:
 		# 80% chance: fully random stats for both

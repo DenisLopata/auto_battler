@@ -3,12 +3,12 @@
 [ext_resource type="Script" uid="uid://qx70k73qbed6" path="res://scenes/arena/arena_main.gd" id="1_0w8lr"]
 [ext_resource type="PackedScene" uid="uid://cpuxaae705hxw" path="res://scenes/fighters/Fighter.tscn" id="1_bq1rl"]
 [ext_resource type="Script" uid="uid://bhvp7taytdsl3" path="res://scenes/arena/arena_controller.gd" id="2_3ilgy"]
-[ext_resource type="Texture2D" uid="uid://dd1jf11hy2p1c" path="res://assets/backgrounds/basic/Ancient Path to Majestic Peaks.png" id="2_i7jdh"]
 [ext_resource type="Shader" uid="uid://cvg07deefmng2" path="res://assets/shaders/background/background_transition.gdshader" id="2_paj5n"]
 [ext_resource type="PackedScene" uid="uid://coga57yxtjcop" path="res://scenes/ui/fighter/fighter_hud.tscn" id="2_xniir"]
 [ext_resource type="Texture2D" uid="uid://b4et34v71ah1d" path="res://assets/backgrounds/base_set/showdown_in_valley.png" id="3_8hq7r"]
 [ext_resource type="Script" uid="uid://dw2be0inn6tea" path="res://scenes/arena/camera_rig.gd" id="3_i7jdh"]
 [ext_resource type="Theme" uid="uid://cyjb538c0mg2c" path="res://assets/themes/main_theme.tres" id="3_pd5rn"]
+[ext_resource type="Texture2D" uid="uid://csmhowo1ext2q" path="res://assets/backgrounds/base_set/majestic_peaks.png" id="4_8hq7r"]
 [ext_resource type="Texture2D" uid="uid://o3qe3m8wqcd3" path="res://assets/backgrounds/base_set/payramid_desert_sun.png" id="4_paj5n"]
 [ext_resource type="Script" uid="uid://dn36oeliwqgou" path="res://scenes/arena/fight_manager.gd" id="5_qdlww"]
 [ext_resource type="PackedScene" uid="uid://lpk8b5yjpnc6" path="res://scenes/ui/betting_panel/betting_panel.tscn" id="7_p8l0n"]
@@ -33,7 +33,7 @@ offset_top = -280.0
 offset_right = 1436.0
 offset_bottom = 744.0
 scale = Vector2(0.625, 0.625)
-texture = ExtResource("2_i7jdh")
+texture = ExtResource("4_8hq7r")
 stretch_mode = 4
 
 [node name="BackgroundOverlay" type="TextureRect" parent="."]
