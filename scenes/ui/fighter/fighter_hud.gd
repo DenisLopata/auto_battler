@@ -46,11 +46,12 @@ func _update_bars(fighter: Fighter, group: VBoxContainer):
 	group.get_node("SpecialMeter").value = fighter.special_meter
 	group.get_node("SpecialMeter").max_value = fighter.max_special()
 	
-	if OS.is_debug_build():
-		_update_debug_stats(fighter, group)
-	else:
-		var label := group.get_node("DebugStatsLabel") as RichTextLabel
-		label.clear()
+	_update_debug_stats(fighter, group)
+	#if OS.is_debug_build():
+		#_update_debug_stats(fighter, group)
+	#else:
+		#var label := group.get_node("DebugStatsLabel") as RichTextLabel
+		#label.clear()
 		
 
 
@@ -64,8 +65,9 @@ func _update_debug_stats(fighter: Fighter, group: VBoxContainer):
 		label.text += "AGI: %d\n" % fighter.base_stats.agility
 		label.text += "END: %d\n" % fighter.base_stats.endurance
 		label.text += "TEC: %d\n" % fighter.base_stats.technique
-		label.text += "\n"
-		label.text += "[b]Health:[/b] %.1f / %.1f\n" % [fighter.health, fighter.max_health()]
-		label.text += "[b]Stamina:[/b] %.1f / %.1f\n" % [fighter.stamina, fighter.max_stamina()]
-		label.text += "[b]Special:[/b] %.1f / %.1f\n" % [fighter.special_meter, fighter.max_special()]
-		
+		if OS.is_debug_build():
+			label.text += "\n"
+			label.text += "[b]Health:[/b] %.1f / %.1f\n" % [fighter.health, fighter.max_health()]
+			label.text += "[b]Stamina:[/b] %.1f / %.1f\n" % [fighter.stamina, fighter.max_stamina()]
+			label.text += "[b]Special:[/b] %.1f / %.1f\n" % [fighter.special_meter, fighter.max_special()]
+			

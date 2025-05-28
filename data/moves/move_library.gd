@@ -2,7 +2,7 @@
 class_name MoveLibrary
 extends Node
 
-const MoveData = preload("res://data/core/move_data.gd")
+#const MoveData = preload("res://data/core/move_data.gd")
 
 func create_basic_punch() -> MoveData:
 	var move = MoveData.new()

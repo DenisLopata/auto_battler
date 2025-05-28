@@ -239,7 +239,7 @@ func is_in_range(target: Node) -> bool:
 	
 
 func get_stamina_regen_rate() -> float:
-	var base_rate := 0.8  # stamina per second
+	var base_rate := 1.2  # stamina per second
 	
 	
 	# Adjust based on state

@@ -144,8 +144,8 @@ var mythological_name_pool = [
 func choose_archetypes() -> Array[String]:
 	var archetypes = ["Strength", "Endurance", "Technique", "Agility"]
 
-	if randf() < 0.2:
-		# 20% chance: fully random stats for both
+	if randf() < 0.8:
+		# 80% chance: fully random stats for both
 		return ["random", "random"]
 
 	# 80% chance: use predefined archetypes

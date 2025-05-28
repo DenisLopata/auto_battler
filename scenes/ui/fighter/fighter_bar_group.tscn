@@ -1,6 +1,24 @@
-[gd_scene load_steps=2 format=3 uid="uid://bn0ajrndu5y6v"]
+[gd_scene load_steps=8 format=3 uid="uid://bn0ajrndu5y6v"]
 
 [ext_resource type="Theme" uid="uid://cyjb538c0mg2c" path="res://assets/themes/main_theme.tres" id="1_r4o5f"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r4o5f"]
+bg_color = Color(0.282353, 0.298039, 0.443137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i37tl"]
+bg_color = Color(0.784314, 0.235294, 0.313726, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mu84p"]
+bg_color = Color(0.282353, 0.298039, 0.443137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_udpqx"]
+bg_color = Color(0.960784, 0.882353, 0.803922, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_swiqe"]
+bg_color = Color(0.282353, 0.298039, 0.443137, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lhie4"]
+bg_color = Color(0.4, 0.690196, 1, 1)
 
 [node name="FighterBarGroup" type="VBoxContainer"]
 custom_minimum_size = Vector2(120, 0)
@@ -15,16 +33,22 @@ text = "Mirko"
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_r4o5f")
+theme_override_styles/background = SubResource("StyleBoxFlat_r4o5f")
+theme_override_styles/fill = SubResource("StyleBoxFlat_i37tl")
 
 [node name="StaminaBar" type="ProgressBar" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_r4o5f")
+theme_override_styles/background = SubResource("StyleBoxFlat_mu84p")
+theme_override_styles/fill = SubResource("StyleBoxFlat_udpqx")
 
 [node name="SpecialMeter" type="ProgressBar" parent="."]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("1_r4o5f")
+theme_override_styles/background = SubResource("StyleBoxFlat_swiqe")
+theme_override_styles/fill = SubResource("StyleBoxFlat_lhie4")
 
 [node name="DebugStatsLabel" type="RichTextLabel" parent="."]
 custom_minimum_size = Vector2(0, 150)
